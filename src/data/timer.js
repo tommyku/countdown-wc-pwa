@@ -28,6 +28,30 @@ class Timer {
     const { name, endAt, uuid } = this;
     return { name, endAt, uuid };
   }
+
+  distance(d = false, h = false, m = false, s = false) {
+    const now = new Date().getTime();
+    const then = new Date(this.endAt).getTime();
+
+    const distance = (then - now < 1000) ? 0 : (then - now);
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    const text = `
+      ${ d === true ? days + 'd ' : '' }
+      ${ h === true ? hours + 'h ' : '' }
+      ${ m === true ? minutes + 'm ' : '' }
+      ${ s === true ? seconds + 's ' : '' }
+    `;
+
+    return {
+      seconds: distance,
+      text: text
+    };
+  }
 }
 
 export default Timer;
