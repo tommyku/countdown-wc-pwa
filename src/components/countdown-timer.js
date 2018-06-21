@@ -46,9 +46,7 @@ class CountdownTimer extends HTMLElement {
     if (seconds > 0) {
       this.dom.timeEndAt.textContent = text;
     } else {
-      const nowTimer = new Timer({ endAt: (new Date()).toUTCString() });
-      this.dom.timeEndAt.textContent = nowTimer.distance(true, true, true, true).text;
-      clearInterval(this.updateEndAtDisplayInterval);
+      this.dom.timeEndAt.remove();
     }
   }
 

@@ -1,0 +1,3 @@
+[submodule "src/modules/wc-blink"]
+	path = src/modules/wc-blink
+	url = https://github.com/tommyku/wc-blink
