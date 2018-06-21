@@ -8,7 +8,9 @@ A countdown progressive web app that uses web component.
 - [x] store timers in localstorage
 - [x] add timer
 - [x] remove timer
-- [ ] work offline
+- [x] work offline
+- [ ] edit timer
 - [ ] notification
+- [ ] a more acceptable UI
 
 https://github.com/mdn/web-components-examples
