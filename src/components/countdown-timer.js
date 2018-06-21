@@ -17,6 +17,11 @@ class CountdownTimer extends HTMLElement {
     const shadowRoot = this.attachShadow({ mode: 'open' })
       .appendChild(template.cloneNode(true));
 
+    }
+
+  connectedCallback() {
+    this.connected = true;
+
     this.dom = {
       h3name: document.createElement('span'),
       timeEndAt: document.createElement('span'),
@@ -50,19 +55,43 @@ class CountdownTimer extends HTMLElement {
     }
   }
 
+  renderChanges(name) {
+    switch (name) {
+      case 'name':
+        this.dom.h3name.textContent = this.timer.name;
+        break;
+      case 'end-at': // endAt doesn't work, use end-at
+        this.updateEndAtDisplay();
+        break;
+      case 'uuid':
+        this.dom.smallUuid.textContent = this.timer.uuid;
+        break;
+      default:
+      // pass
+    }
+  }
+
   attributeChangedCallback(name, oldValue, newValue) {
+    // Only change state here, not DOM because this element may
+    // not have been connected
     // TODO: a proper render method for these attributes
     switch (name) {
       case 'name':
         this.timer.name = newValue;
-        this.dom.h3name.textContent = this.timer.name;
         break;
       case 'end-at': // endAt doesn't work, use end-at
         this.timer.endAt = newValue;
-        this.updateEndAtDisplay();
+        break;
+      case 'uuid':
+        this.timer.uuid = newValue;
         break;
       default:
       // pass
+    }
+
+    // change DOM only after it's connected
+    if (this.connected) {
+      this.renderChanges();
     }
   }
 }

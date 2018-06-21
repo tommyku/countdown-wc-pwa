@@ -10,13 +10,11 @@
   </head>
   <body>
     <localstorage store='countdown'></localstorage>
-    <countdown-timer-list store='countdown'>
-      <countdown-timer name='Last Christmas' end-at='Mon, 25 Dec 2017 15:00:00 GMT'></countdown-timer>
-      <countdown-timer name="Mom's birthday" end-at='Sun, 24 Jun 2018 15:00:00 GMT'></countdown-timer>
-      <countdown-timer name='Her birthday' end-at='Sat, 7 Jul 2018 15:00:00 GMT'></countdown-timer>
-      <countdown-timer name='Christmas' end-at='Tue, 25 Dec 2018 15:00:00 GMT'></countdown-timer>
-    </countdown-timer-list>
-    <template id="countdown-timer">
+    <countdown-timer-list store='countdown'></countdown-timer-list>
+    <template id='countdown-timer-list'>
+      <slot name='content'></slot>
+    </template>
+    <template id='countdown-timer'>
       <style>
         div.container {
           padding: 1rem 0.75rem;

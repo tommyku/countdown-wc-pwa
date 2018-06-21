@@ -4,7 +4,7 @@ A countdown progressive web app that uses web component.
 
 ## Features
 
-[ ] do countdown given a timer name, target date and time
+[x] do countdown given a timer name, target date and time
 [ ] store timers in localstorage
 [ ] work offline
 [ ] notification
