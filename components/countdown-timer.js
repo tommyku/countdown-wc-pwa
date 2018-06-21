@@ -22,6 +22,14 @@ class CountdownTimer extends HTMLElement {
   connectedCallback() {
     this.connected = true;
 
+    // attributeChangedCallback not fired between
+    // construction and connect, so we need to read them again here
+    this.timer = new Timer({
+      name: this.getAttribute('name'),
+      endAt: this.getAttribute('end-at'),
+      uuid: this.getAttribute('uuid'),
+    });
+
     this.dom = {
       h3name: document.createElement('span'),
       timeEndAt: document.createElement('span'),
@@ -40,8 +48,6 @@ class CountdownTimer extends HTMLElement {
     Object.values(this.dom).forEach((child) => {
       this.appendChild(child);
     });
-
-    this.addEventListener('like-what', (e) => console.log(e.bubbles, e.detail));
 
     this.updateEndAtDisplayInterval = setInterval(() => this.updateEndAtDisplay(), 500);
   }
