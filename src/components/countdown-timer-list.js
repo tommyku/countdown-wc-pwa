@@ -26,6 +26,8 @@ class CountdownTimerList extends HTMLElement {
     this.appendChild(contentDiv);
 
     this.localStorage = document.querySelector(`local-storage[store="${this.storeName}"]`);
+
+    this.addEventListener('add', (e) => this.addTimer(e));
   }
 
   generateCountdownTimer(timer) {
@@ -58,6 +60,21 @@ class CountdownTimerList extends HTMLElement {
     //);
   }
 
+  addTimer(e) {
+    const timer = new Timer(e.detail.timer);
+    this.timers.push(timer);
+
+    this.localStorage.dispatchEvent(
+      new CustomEvent('update', {
+        detail: {
+          data: this.timers
+        }
+      })
+    );
+
+    this.renderTimers();
+  }
+
   renderTimers() {
     this.contentDiv.innerHTML = ''; // any better way to update like virtual DOM?
     this.timers.forEach((timer) => {
@@ -68,8 +85,10 @@ class CountdownTimerList extends HTMLElement {
   }
 
   storeUpdateCallback(data) {
-    this.timers = data.map((timer) => new Timer(timer));
-    this.renderTimers();
+    if (Array.isArray(data)) {
+      this.timers = data.map((timer) => new Timer(timer));
+      this.renderTimers();
+    }
   }
 }
 

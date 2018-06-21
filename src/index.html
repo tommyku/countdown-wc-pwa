@@ -11,6 +11,15 @@
   <body>
     <local-storage store='countdown'></local-storage>
     <countdown-timer-list store='countdown'></countdown-timer-list>
+    <dialog id='add-timer'>
+      <input type='text' id='name' />
+      <input type='date' id='end-at' />
+      <button class='button-add-timer'>Add</button>
+      <button class='button-hide-modal'>Cancel</button>
+    </dialog>
+    <footer>
+      <button role='button' class='button-show-modal'>Add Timer</button>
+    </footer>
     <template id='countdown-timer-list'>
       <slot name='content'></slot>
     </template>

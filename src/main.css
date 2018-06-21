@@ -16,3 +16,37 @@ html, body {
 * {
   user-select: none;
 }
+
+footer {
+  display: block;
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+}
+
+button.button-show-modal {
+  display: block;
+  width: 100vw;
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  border: none;
+  background: none;
+  background-color: navy;
+  color: white;
+}
+
+button.button-show-modal:hover {
+  background-color: blue;
+}
+
+button.button-show-modal:active {
+  background-color: navy;
+}
+
+input {
+  display: block;
+}
