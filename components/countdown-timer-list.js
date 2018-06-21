@@ -4,12 +4,7 @@ class CountdownTimerList extends HTMLElement {
   constructor() {
     super();
 
-    this.timers = [
-      //new Timer({ name: 'Last Christmas', endAt: 'Mon, 25 Dec 2017 15:00:00 GMT' }),
-      //new Timer({ name: "Mom's birthday", endAt: 'Sun, 24 Jun 2018 15:00:00 GMT' }),
-      //new Timer({ name: 'Her birthday', endAt: 'Sat, 7 Jul 2018 15:00:00 GMT' }),
-      //new Timer({ name: 'Christmas', endAt: 'Tue, 25 Dec 2018 15:00:00 GMT' }),
-    ];
+    this.timers = {};
 
     this.storeName = this.getAttribute('store') || 'untitled-store';
 
@@ -28,6 +23,7 @@ class CountdownTimerList extends HTMLElement {
     this.localStorage = document.querySelector(`local-storage[store="${this.storeName}"]`);
 
     this.addEventListener('add', (e) => this.addTimer(e));
+    this.addEventListener('remove', (e) => this.removeTimer(e));
   }
 
   generateCountdownTimer(timer) {
@@ -49,44 +45,47 @@ class CountdownTimerList extends HTMLElement {
         }
       })
     );
-
-    // update
-    //this.localStorage.dispatchEvent(
-      //new CustomEvent('update', {
-        //detail: {
-          //data: this.timers
-        //}
-      //})
-    //);
   }
 
   addTimer(e) {
     const timer = new Timer(e.detail.timer);
-    this.timers.push(timer);
+    this.timers[timer.uuid] = timer;
+    this.updateStorage();
+  }
 
+  updateStorage() {
     this.localStorage.dispatchEvent(
       new CustomEvent('update', {
         detail: {
-          data: this.timers
+          data: Object.values(this.timers)
         }
       })
     );
+  }
 
-    this.renderTimers();
+  removeTimer(e) {
+    const uuid = e.detail.uuid;
+    delete this.timers[uuid];
+    this.updateStorage();
   }
 
   renderTimers() {
     this.contentDiv.innerHTML = ''; // any better way to update like virtual DOM?
-    this.timers.forEach((timer) => {
-      this.contentDiv.appendChild(
-        this.generateCountdownTimer(timer)
-      );
-    });
+    if (Object.keys(this.timers).length > 0) {
+      Object.values(this.timers).forEach((timer) => {
+        this.contentDiv.appendChild(
+          this.generateCountdownTimer(timer)
+        );
+      });
+    } else {
+      this.contentDiv.innerHTML = 'No timer! Add one!';
+    }
   }
 
   storeUpdateCallback(data) {
     if (Array.isArray(data)) {
-      this.timers = data.map((timer) => new Timer(timer));
+      this.timers = {};
+      data.forEach((timer) => this.timers[timer.uuid] = new Timer(timer));
       this.renderTimers();
     }
   }

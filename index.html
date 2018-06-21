@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   </head>
   <body>
+    <header>Countdown</header>
     <local-storage store='countdown'></local-storage>
     <countdown-timer-list store='countdown'></countdown-timer-list>
     <dialog id='add-timer'>
@@ -27,7 +28,6 @@
       <style>
         div.container {
           padding: 1rem 0.75rem;
-          margin: 1rem 0;
           font-family: sans-serif;
           border: none;
           background-image:
@@ -55,16 +55,24 @@
           font-size: 0.5rem;
           color: #22222255;
         }
+        small.end-at {
+          color: #222222ee;
+        }
+        button.button-remove {
+          float: right;
+        }
       </style>
       <div class='container'>
         <h3><slot name='name'>Untitled</slot></h3>
         <time>
-          <slot name='endAt'>
+          <slot name='countdown'>
             <wc-blink>TIME IS UP!!!</wc-blink>
           </slot>
         </time>
+        <small class='end-at'><slot name='endAt'></slot></small>
         <br />
-        <small><slot name='uuid'>uuid</slot></small>
+        <small class='uuid'><slot name='uuid'>uuid</slot></small>
+        <button class='button-remove'>remove</button>
       </div>
     </template>
   </body>
