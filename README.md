@@ -9,7 +9,7 @@ A countdown progressive web app that uses web component.
 - [x] add timer
 - [x] remove timer
 - [x] work offline
-- [ ] edit timer
+- [x] edit timer
 - [ ] notification
 - [ ] a more acceptable UI
 

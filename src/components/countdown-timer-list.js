@@ -22,8 +22,9 @@ class CountdownTimerList extends HTMLElement {
 
     this.localStorage = document.querySelector(`local-storage[store="${this.storeName}"]`);
 
-    this.addEventListener('add', (e) => this.addTimer(e));
-    this.addEventListener('remove', (e) => this.removeTimer(e));
+    this.addEventListener('add', (e) => this.addTimer(e.detail));
+    this.addEventListener('remove', (e) => this.removeTimer(e.detail));
+    this.addEventListener('update', (e) => this.updateTimer(e.detail));
   }
 
   generateCountdownTimer(timer) {
@@ -47,8 +48,8 @@ class CountdownTimerList extends HTMLElement {
     );
   }
 
-  addTimer(e) {
-    const timer = new Timer(e.detail.timer);
+  addTimer(d) {
+    const timer = new Timer(d.timer);
     this.timers[timer.uuid] = timer;
     this.updateStorage();
   }
@@ -63,9 +64,17 @@ class CountdownTimerList extends HTMLElement {
     );
   }
 
-  removeTimer(e) {
-    const uuid = e.detail.uuid;
+  removeTimer(d) {
+    const uuid = d.uuid;
     delete this.timers[uuid];
+    this.updateStorage();
+  }
+
+  updateTimer(d) {
+    const { uuid, name, endAt } = d.timer;
+    const timer = this.timers[uuid];
+    timer.name = name;
+    timer.endAt = endAt;
     this.updateStorage();
   }
 

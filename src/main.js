@@ -8,17 +8,28 @@ customElements.define('countdown-timer', CountdownTimer);
 customElements.define('countdown-timer-list', CountdownTimerList);
 
 const dialogAddTimer = document.querySelector('#add-timer');
+const dialogEditTimer = document.querySelector('#edit-timer');
 const buttonAddTimer = document.querySelector('.button-add-timer');
-const buttonHideModal = document.querySelector('.button-hide-modal');
-const buttonShowModal = document.querySelector('.button-show-modal');
+const buttonEditTimer = document.querySelector('.button-edit-timer');
+const buttonHideModals = document.querySelectorAll('.button-hide-modal');
+const buttonShowModals = document.querySelectorAll('.button-show-modal');
 const inputName = document.querySelector('#name');
 const inputEndAt = document.querySelector('#end-at');
+const inputEditName = document.querySelector('#edit-name');
+const inputEditEndAt = document.querySelector('#edit-end-at');
+const inputEditUuid = document.querySelector('#edit-uuid');
 const countdownTimerList = document.querySelector('countdown-timer-list');
 
-buttonShowModal.addEventListener('click', () => dialogAddTimer.showModal());
-buttonHideModal.addEventListener('click', () => dialogAddTimer.close());
+buttonShowModals.forEach(button => {
+  button.addEventListener('click', (e) => {
+    document.querySelector(`#${e.target.dataset.modal}`).showModal();
+  });
+});
+buttonHideModals.forEach(button => {
+  button.addEventListener('click', (e) => e.target.closest('dialog').close());
+});
 
-buttonAddTimer.addEventListener('click', () => {
+buttonAddTimer.addEventListener('click', (e) => {
   const name = inputName.value;
   const endAt = inputEndAt.value;
 
@@ -30,24 +41,24 @@ buttonAddTimer.addEventListener('click', () => {
       }
     }
   }));
+
+  e.target.closest('dialog').close();
 });
 
-// Service worker
-if (navigator.serviceWorker.controller) {
-  console.log('[PWA Builder] active service worker found, no need to register')
-} else {
-  //Register the ServiceWorker
-  navigator.serviceWorker.register('sw.js', {
-    scope: './'
-  }).then(function(reg) {
-    console.log('Service worker has been registered for scope:'+ reg.scope);
-  });
-}
+buttonEditTimer.addEventListener('click', (e) => {
+  const name = inputEditName.value;
+  const endAt = inputEditEndAt.value;
+  const uuid = inputEditUuid.value;
 
-// Persistent storage API
-if (navigator.storage && navigator.storage.persist) {
-  navigator.storage.persist().then(granted => {
-    // If granted, Storage will not be cleared except by explicit user action
-    // Otherwise, storage may be cleared by the UA under storage pressure.
-  });
-}
+  countdownTimerList.dispatchEvent(new CustomEvent('update', {
+    detail: {
+      timer: {
+        name: name,
+        endAt: (new Date(endAt)).toUTCString(),
+        uuid: uuid
+      }
+    }
+  }));
+
+  e.target.closest('dialog').close();
+});
