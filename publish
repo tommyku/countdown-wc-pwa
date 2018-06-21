@@ -12,4 +12,5 @@ git commit -m 'ADD: Update'
 git push origin gh-pages
 
 git checkout master
+git clean -df
 git submodule update
