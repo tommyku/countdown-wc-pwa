@@ -10,3 +10,6 @@ git add .
 git commit -m 'ADD: Update'
 
 git push origin gh-pages
+
+git checkout master
+git submodule update
