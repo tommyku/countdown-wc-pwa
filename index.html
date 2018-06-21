@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>Countdown-wc-pwa</title>
+    <script src='main.js' type='module' defer></script>
+    <link rel='stylesheet' href='main.css' />
+    <link rel='import' href='modules/wc-blink/wc-blink.html' />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  </head>
+  <body>
+    <local-storage store='countdown'></local-storage>
+    <countdown-timer-list store='countdown'></countdown-timer-list>
+    <dialog id='add-timer'>
+      <input type='text' id='name' />
+      <input type='date' id='end-at' />
+      <button class='button-add-timer'>Add</button>
+      <button class='button-hide-modal'>Cancel</button>
+    </dialog>
+    <footer>
+      <button role='button' class='button-show-modal'>Add Timer</button>
+    </footer>
+    <template id='countdown-timer-list'>
+      <slot name='content'></slot>
+    </template>
+    <template id='countdown-timer'>
+      <style>
+        div.container {
+          padding: 1rem 0.75rem;
+          margin: 1rem 0;
+          font-family: sans-serif;
+          border: none;
+          background-image:
+            linear-gradient(
+            to bottom left,
+            yellow 20%, #f06d06
+          );
+          color: #222222ee;
+        }
+        h3 {
+          margin: 0 0 1rem 0;
+          font-size: 1.5rem;
+          text-decoration: overline underline double;
+          line-height: 1.8rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        time {
+          display: block;
+          text-align: center;
+          font-size: 2rem;
+        }
+        small {
+          font-size: 0.5rem;
+          color: #22222255;
+        }
+      </style>
+      <div class='container'>
+        <h3><slot name='name'>Untitled</slot></h3>
+        <time>
+          <slot name='endAt'>
+            <wc-blink>TIME IS UP!!!</wc-blink>
+          </slot>
+        </time>
+        <br />
+        <small><slot name='uuid'>uuid</slot></small>
+      </div>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+git checkout master
+cp -r src /tmp
+
+git checkout gh-pages
+rm -rf ./*
+cp -r /tmp/src/* .
+
+git add .
+git commit -m 'ADD: Update'
+
+git push origin gh-pages
