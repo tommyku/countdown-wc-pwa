@@ -79,15 +79,31 @@ class CountdownTimerList extends HTMLElement {
   }
 
   renderTimers() {
-    this.contentDiv.innerHTML = ''; // any better way to update like virtual DOM?
     if (Object.keys(this.timers).length > 0) {
-      Object.values(this.timers).forEach((timer) => {
-        this.contentDiv.appendChild(
-          this.generateCountdownTimer(timer)
-        );
-      });
+      // something like React's virtual DOM may be grest here coz I don't wanna replace innerHTML all the time
+      // first remove textNodes for empty list message
+      [].slice.call(this.contentDiv.childNodes)
+        .filter(child => child.nodeName === '#text')
+        .forEach(textNode => textNode.remove());
+
+      // 1. get the childNodes, remove if in timers
+      // 2. leftovers gets removed
+      // 3. now get timers, and remove if in childNodes
+      // 4. leftovers gets added
+      const timersUuids = Object.values(this.timers).map(timer => timer.uuid);
+      const childNodeUuids = [].slice.call(this.contentDiv.children)
+        .filter(child => child.tagName === 'COUNTDOWN-TIMER')
+        .map(child => child.getAttribute('uuid'));
+
+      const toRemove = childNodeUuids.filter((uuid) => timersUuids.indexOf(uuid) == -1); // not in timers
+      const toAdd = timersUuids.filter((uuid) => childNodeUuids.indexOf(uuid) == -1); // not in children
+
+      toRemove.forEach((uuid) => this.contentDiv.querySelector(`countdown-timer[uuid="${uuid}"]`).remove());
+      toAdd.forEach((uuid) => this.contentDiv.appendChild(
+          this.generateCountdownTimer(this.timers[uuid])
+      ));
     } else {
-      this.contentDiv.innerHTML = 'No timer! Add one!';
+      this.contentDiv.textContent = 'No timer! Add one!';
     }
   }
 

@@ -67,6 +67,12 @@ class CountdownTimer extends HTMLElement {
       this.dom.timeCountdown.textContent = text;
     } else {
       this.dom.timeCountdown.remove();
+      if (seconds <= 0 && !this.notified && Notification.permission === 'granted') {
+        this.notified = true;
+        const notification = new Notification(`It's time for ${this.timer.name}!`, {
+          body: `The designated time for ${this.timer.name} is ${(new Date(this.timer.endAt)).toLocaleString()}.`
+        });
+      }
     }
   }
 

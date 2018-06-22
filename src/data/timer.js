@@ -48,7 +48,7 @@ class Timer {
     `;
 
     return {
-      seconds: distance,
+      seconds: distance / 1000,
       text: text
     };
   }

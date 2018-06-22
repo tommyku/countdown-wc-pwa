@@ -17,3 +17,11 @@ if (navigator.storage && navigator.storage.persist) {
     // Otherwise, storage may be cleared by the UA under storage pressure.
   });
 }
+
+// Notification
+if ("Notification" in window) {
+  if (Notification.permission !== 'denied') {
+    // ask for permission for use later
+    Notification.requestPermission();
+  }
+}
