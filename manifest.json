@@ -1,0 +1,17 @@
+{
+  "dir" : "ltr",
+  "lang" : "en",
+  "name" : "Countdown-wc-pwa",
+  "scope" : "/",
+  "display" : "standalone",
+  "start_url" : "https://timer.ck2ustudio.com/",
+  "short_name" : "Countdown",
+  "theme_color" : "transparent",
+  "description" : "Countdown timer that does countdown for you",
+  "orientation" : "portrait",
+  "background_color" : "transparent",
+  "related_applications" : "",
+  "prefer_related_applications" : "false",
+  "icons" : [
+  ]
+}

@@ -24,6 +24,9 @@ class CountdownTimer extends HTMLElement {
     const buttonRemove = this.shadowRoot.querySelector('.button-remove');
     buttonRemove.addEventListener('click', () => this.removeTimer());
 
+    const buttonEdit = this.shadowRoot.querySelector('.button-edit');
+    buttonEdit.addEventListener('click', () => this.editTimer());
+
     // attributeChangedCallback not fired between
     // construction and connect, so we need to read them again here
     this.timer = new Timer({
@@ -49,7 +52,7 @@ class CountdownTimer extends HTMLElement {
     this.dom.timeCountdown.textContent = this.timer.distance(true, true, true, true).text;
 
     this.dom.timeEndAt.setAttribute('slot', 'endAt');
-    this.dom.timeEndAt.textContent = this.timer.endAt;
+    this.dom.timeEndAt.textContent = new Date(this.timer.endAt).toLocaleString();
 
     Object.values(this.dom).forEach((child) => {
       this.appendChild(child);
@@ -64,6 +67,12 @@ class CountdownTimer extends HTMLElement {
       this.dom.timeCountdown.textContent = text;
     } else {
       this.dom.timeCountdown.remove();
+      if (seconds <= 0 && !this.notified && Notification.permission === 'granted') {
+        this.notified = true;
+        const notification = new Notification(`It's time for ${this.timer.name}!`, {
+          body: `The designated time for ${this.timer.name} is ${(new Date(this.timer.endAt)).toLocaleString()}.`
+        });
+      }
     }
   }
 
@@ -78,6 +87,19 @@ class CountdownTimer extends HTMLElement {
     );
   }
 
+  editTimer() {
+    const dialogEditTimer = document.getElementById('edit-timer');
+    const inputEditName = document.querySelector('#edit-name');
+    const inputEditEndAt = document.querySelector('#edit-end-at');
+    const inputEditUuid = document.querySelector('#edit-uuid');
+
+    inputEditName.value = this.timer.name;
+    inputEditEndAt.valueAsDate = new Date(this.timer.endAt);
+    inputEditUuid.value = this.timer.uuid;
+
+    dialogEditTimer.showModal();
+  }
+
   renderChanges(name) {
     switch (name) {
       case 'name':
@@ -85,7 +107,7 @@ class CountdownTimer extends HTMLElement {
         break;
       case 'end-at': // endAt doesn't work, use end-at
         this.updateEndAtDisplay();
-        this.dom.timeEndAt.textContent = this.timer.endAt;
+        this.dom.timeEndAt.textContent = new Date(this.timer.endAt).toLocaleString();
         break;
       case 'uuid':
         this.dom.smallUuid.textContent = this.timer.uuid;
