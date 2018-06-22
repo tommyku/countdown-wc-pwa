@@ -137,7 +137,7 @@ class CountdownTimer extends HTMLElement {
 
     // change DOM only after it's connected
     if (this.connected) {
-      this.renderChanges();
+      this.renderChanges(name);
     }
   }
 }

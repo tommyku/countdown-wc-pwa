@@ -102,6 +102,18 @@ class CountdownTimerList extends HTMLElement {
       toAdd.forEach((uuid) => this.contentDiv.appendChild(
           this.generateCountdownTimer(this.timers[uuid])
       ));
+
+      // update attributes
+      [].slice.call(this.contentDiv.children)
+        .filter(child => child.tagName === 'COUNTDOWN-TIMER')
+        .forEach(countdownTimer => {
+          const timer = this.timers[countdownTimer.getAttribute('uuid')];
+          if (timer) {
+            const { name, endAt } = timer.serialize();
+            countdownTimer.setAttribute('name', name);
+            countdownTimer.setAttribute('end-at', endAt);
+          }
+        });
     } else {
       this.contentDiv.textContent = 'No timer! Add one!';
     }
