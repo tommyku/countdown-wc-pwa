@@ -10,7 +10,7 @@ A countdown progressive web app that uses web component.
 - [x] remove timer
 - [x] work offline
 - [x] edit timer
-- [ ] notification
+- [x] notification
 - [ ] a more acceptable UI
 
 https://github.com/mdn/web-components-examples
