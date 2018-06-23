@@ -6,12 +6,22 @@
   "display" : "standalone",
   "start_url" : "https://timer.ck2ustudio.com/",
   "short_name" : "Countdown",
-  "theme_color" : "transparent",
+  "theme_color" : "#0c0a66",
   "description" : "Countdown timer that does countdown for you",
   "orientation" : "portrait",
   "background_color" : "transparent",
   "related_applications" : "",
   "prefer_related_applications" : "false",
   "icons" : [
+    {
+      "src": "/static/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/static/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
   ]
 }
