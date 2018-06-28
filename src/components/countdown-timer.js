@@ -153,6 +153,12 @@ class CountdownTimer extends HTMLElement {
         break;
       case 'end-at': // endAt doesn't work, use end-at
         this.timer.endAt = newValue;
+
+        const now = new Date();
+        const newDate = new Date(this.timer.endAt);
+        if (newDate.getTime() > now.getTime() && this.notified) {
+          this.notified = false; // reset
+        }
         break;
       case 'uuid':
         this.timer.uuid = newValue;
