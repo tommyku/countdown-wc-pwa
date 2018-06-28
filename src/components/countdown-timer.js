@@ -69,9 +69,23 @@ class CountdownTimer extends HTMLElement {
       this.dom.timeCountdown.remove();
       if (seconds <= 0 && !this.notified && Notification.permission === 'granted') {
         this.notified = true;
-        const notification = new Notification(`It's time for ${this.timer.name}!`, {
-          body: `The designated time for ${this.timer.name} is ${(new Date(this.timer.endAt)).toLocaleString()}.`
-        });
+        const title = `It's time for ${this.timer.name}!`;
+        const body = `The designated time for ${this.timer.name} is ${(new Date(this.timer.endAt)).toLocaleString()}.`
+        if (navigator.serviceWorker.controller) {
+          navigator.serviceWorker.ready.then((registration) => {
+            registration.showNotification(title, {
+              body,
+              icon: '/static/icon-192.png',
+              vibrate: [200, 100, 200]
+            });
+          });
+        } else {
+          try {
+            const notification = new Notification(title, { body });
+          } catch (e) {
+            // no notification support
+          }
+        }
       }
     }
   }
