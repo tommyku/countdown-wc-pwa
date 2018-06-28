@@ -24,13 +24,14 @@ buttonHideModals.forEach(button => {
 
 buttonAddTimer.addEventListener('click', (e) => {
   const name = inputName.value;
-  const endAt = inputEndAt.value;
+  const endAtDate = inputEndAt.value;
+  const endAtDateTime = new Date(endAtDate);
 
   countdownTimerList.dispatchEvent(new CustomEvent('add', {
     detail: {
       timer: {
         name: name,
-        endAt: (new Date(endAt)).toUTCString()
+        endAt: endAtDateTime.toUTCString()
       }
     }
   }));
@@ -40,14 +41,15 @@ buttonAddTimer.addEventListener('click', (e) => {
 
 buttonEditTimer.addEventListener('click', (e) => {
   const name = inputEditName.value;
-  const endAt = inputEditEndAt.value;
+  const endAtDate = inputEditEndAt.value;
+  const endAtDateTime = new Date(endAtDate);
   const uuid = inputEditUuid.value;
 
   countdownTimerList.dispatchEvent(new CustomEvent('update', {
     detail: {
       timer: {
         name: name,
-        endAt: (new Date(endAt)).toUTCString(),
+        endAt: endAtDateTime.toUTCString(),
         uuid: uuid
       }
     }
