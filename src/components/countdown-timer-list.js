@@ -8,7 +8,7 @@ class CountdownTimerList extends HTMLElement {
 
     this.storeName = this.getAttribute('store') || 'untitled-store';
 
-    const template = document.getElementById('countdown-timer-list')
+    const template = countdownTimerListDoc.getElementById('countdown-timer-list')
       .content;
     const shadowRoot = this.attachShadow({ mode: 'open' })
       .appendChild(template.cloneNode(true));
@@ -128,4 +128,4 @@ class CountdownTimerList extends HTMLElement {
   }
 }
 
-export default CountdownTimerList;
+customElements.define('countdown-timer-list', CountdownTimerList);

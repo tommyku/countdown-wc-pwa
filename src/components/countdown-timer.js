@@ -12,7 +12,7 @@ class CountdownTimer extends HTMLElement {
       uuid: this.getAttribute('uuid'),
     });
 
-    const template = document.getElementById('countdown-timer')
+    const template = countdownTimerDoc.getElementById('countdown-timer')
       .content;
     const shadowRoot = this.attachShadow({ mode: 'open' })
       .appendChild(template.cloneNode(true));
@@ -156,4 +156,4 @@ class CountdownTimer extends HTMLElement {
   }
 }
 
-export default CountdownTimer;
+customElements.define('countdown-timer', CountdownTimer);
