@@ -1,0 +1,60 @@
+<template id='countdown-timer'>
+  <style>
+    div.container {
+      padding: 1rem 0.75rem;
+      font-family: sans-serif;
+      border: none;
+      background-image:
+        linear-gradient(
+        to bottom left,
+        yellow 20%, #f06d06
+      );
+      color: #222222ee;
+    }
+    h3 {
+      margin: 0 0 1rem 0;
+      font-size: 1.5rem;
+      text-decoration: overline underline double;
+      line-height: 1.8rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    time {
+      display: block;
+      text-align: center;
+      font-size: 2rem;
+    }
+    small {
+      font-size: 0.5rem;
+      color: #22222255;
+    }
+    small.end-at {
+      color: #222222ee;
+    }
+    button.button-remove,
+    button.button-edit {
+      float: right;
+    }
+  </style>
+  <div class='container'>
+    <h3><slot name='name'>Untitled</slot></h3>
+    <time>
+      <slot name='countdown'>
+        <wc-blink>TIME IS UP!!!</wc-blink>
+      </slot>
+    </time>
+    <small class='end-at'><slot name='endAt'></slot></small>
+    <br />
+    <small class='uuid'><slot name='uuid'>uuid</slot></small>
+    <button class='button-remove'>remove</button>
+    <button class='button-edit'>edit</button>
+  </div>
+</template>
+
+<script type='text/javascript'>
+  // reference to this doc for the class to use
+  const countdownTimerDoc = document.currentScript.ownerDocument;
+</script>
+
+<script type='module' src='./countdown-timer.js'></script>

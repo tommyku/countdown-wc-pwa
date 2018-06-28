@@ -1,11 +1,4 @@
 import Timer from '/data/timer.js';
-import LocalStorage from '/components/local-storage.js'
-import CountdownTimer from '/components/countdown-timer.js'
-import CountdownTimerList from '/components/countdown-timer-list.js'
-
-customElements.define('local-storage', LocalStorage);
-customElements.define('countdown-timer', CountdownTimer);
-customElements.define('countdown-timer-list', CountdownTimerList);
 
 const dialogAddTimer = document.querySelector('#add-timer');
 const dialogEditTimer = document.querySelector('#edit-timer');
@@ -31,13 +24,14 @@ buttonHideModals.forEach(button => {
 
 buttonAddTimer.addEventListener('click', (e) => {
   const name = inputName.value;
-  const endAt = inputEndAt.value;
+  const endAtDate = inputEndAt.value;
+  const endAtDateTime = new Date(endAtDate);
 
   countdownTimerList.dispatchEvent(new CustomEvent('add', {
     detail: {
       timer: {
         name: name,
-        endAt: (new Date(endAt)).toUTCString()
+        endAt: endAtDateTime.toUTCString()
       }
     }
   }));
@@ -47,14 +41,15 @@ buttonAddTimer.addEventListener('click', (e) => {
 
 buttonEditTimer.addEventListener('click', (e) => {
   const name = inputEditName.value;
-  const endAt = inputEditEndAt.value;
+  const endAtDate = inputEditEndAt.value;
+  const endAtDateTime = new Date(endAtDate);
   const uuid = inputEditUuid.value;
 
   countdownTimerList.dispatchEvent(new CustomEvent('update', {
     detail: {
       timer: {
         name: name,
-        endAt: (new Date(endAt)).toUTCString(),
+        endAt: endAtDateTime.toUTCString(),
         uuid: uuid
       }
     }

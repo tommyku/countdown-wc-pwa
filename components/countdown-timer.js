@@ -12,7 +12,7 @@ class CountdownTimer extends HTMLElement {
       uuid: this.getAttribute('uuid'),
     });
 
-    const template = document.getElementById('countdown-timer')
+    const template = countdownTimerDoc.getElementById('countdown-timer')
       .content;
     const shadowRoot = this.attachShadow({ mode: 'open' })
       .appendChild(template.cloneNode(true));
@@ -64,9 +64,18 @@ class CountdownTimer extends HTMLElement {
   updateEndAtDisplay() {
     const { seconds, text } = this.timer.distance(true, true, true, true);
     if (seconds > 0) {
+      if (this.dom.timeCountdownBackup) {
+        this.appendChild(this.dom.timeCountdownBackup);
+        this.dom.timeCountdown = this.dom.timeCountdownBackup;
+        this.dom.timeCountdownBackup = null;
+      }
       this.dom.timeCountdown.textContent = text;
     } else {
-      this.dom.timeCountdown.remove();
+      if (this.dom.timeCountdown) {
+        this.dom.timeCountdownBackup = this.dom.timeCountdown.cloneNode(true);
+        this.dom.timeCountdown.remove();
+        this.dom.timeCountdown = null;
+      }
       if (seconds <= 0 && !this.notified && Notification.permission === 'granted') {
         this.notified = true;
         const title = `It's time for ${this.timer.name}!`;
@@ -106,9 +115,12 @@ class CountdownTimer extends HTMLElement {
     const inputEditName = document.querySelector('#edit-name');
     const inputEditEndAt = document.querySelector('#edit-end-at');
     const inputEditUuid = document.querySelector('#edit-uuid');
+    const endAt = new Date(this.timer.endAt);
+    const lo = (num) => (num < 10) ? `0${num}` : num.toString();
+    const endAtValue = `${endAt.getFullYear()}-${lo(endAt.getMonth()+1)}-${lo(endAt.getDate())}T${lo(endAt.getHours())}:${lo(endAt.getMinutes())}`;
 
     inputEditName.value = this.timer.name;
-    inputEditEndAt.valueAsDate = new Date(this.timer.endAt);
+    inputEditEndAt.value = endAtValue;
     inputEditUuid.value = this.timer.uuid;
 
     dialogEditTimer.showModal();
@@ -156,4 +168,4 @@ class CountdownTimer extends HTMLElement {
   }
 }
 
-export default CountdownTimer;
+customElements.define('countdown-timer', CountdownTimer);

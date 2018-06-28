@@ -14,18 +14,15 @@
     <link rel="icon" type="image/png" href="static/icon-192.png">
     <link rel="apple-touch-icon" href="static/icon-192.png">
     <link rel='stylesheet' href='main.css' />
-    <link rel='import' href='modules/wc-blink/wc-blink-element.html' async />
-
-    <script src='main.js' type='module' defer></script>
-    <script src='pwa.js' type='text/javascript' defer></script>
   </head>
   <body>
     <header>Countdown</header>
     <local-storage store='countdown'></local-storage>
     <countdown-timer-list store='countdown'></countdown-timer-list>
+
     <dialog id='edit-timer'>
       <input type='text' id='edit-name' />
-      <input type='date' id='edit-end-at' />
+      <input type='datetime-local' id='edit-end-at' />
       <input type='hidden' id='edit-uuid' />
       <button class='button-edit-timer'>Edit</button>
       <button class='button-hide-modal'>Cancel</button>
@@ -33,68 +30,21 @@
 
     <dialog id='add-timer'>
       <input type='text' id='name' />
-      <input type='date' id='end-at' />
+      <input type='datetime-local' id='end-at' />
       <button class='button-add-timer'>Add</button>
       <button class='button-hide-modal'>Cancel</button>
     </dialog>
     <footer>
+
       <button role='button' class='button-show-modal' data-modal='add-timer'>Add Timer</button>
     </footer>
-    <template id='countdown-timer-list'>
-      <slot name='content'></slot>
-    </template>
-    <template id='countdown-timer'>
-      <style>
-        div.container {
-          padding: 1rem 0.75rem;
-          font-family: sans-serif;
-          border: none;
-          background-image:
-            linear-gradient(
-            to bottom left,
-            yellow 20%, #f06d06
-          );
-          color: #222222ee;
-        }
-        h3 {
-          margin: 0 0 1rem 0;
-          font-size: 1.5rem;
-          text-decoration: overline underline double;
-          line-height: 1.8rem;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        time {
-          display: block;
-          text-align: center;
-          font-size: 2rem;
-        }
-        small {
-          font-size: 0.5rem;
-          color: #22222255;
-        }
-        small.end-at {
-          color: #222222ee;
-        }
-        button.button-remove,
-        button.button-edit {
-          float: right;
-        }
-      </style>
-      <div class='container'>
-        <h3><slot name='name'>Untitled</slot></h3>
-        <time>
-          <slot name='countdown'>
-            <wc-blink>TIME IS UP!!!</wc-blink>
-          </slot>
-        </time>
-        <small class='end-at'><slot name='endAt'></slot></small>
-        <br />
-        <small class='uuid'><slot name='uuid'>uuid</slot></small>
-        <button class='button-remove'>remove</button>
-        <button class='button-edit'>edit</button>
-      </div>
-    </template>
+
+    <link rel='import' href='components/local-storage.html' />
+    <link rel='import' href='components/countdown-timer.html' />
+    <link rel='import' href='components/countdown-timer-list.html' />
+    <link rel='import' href='modules/wc-blink/wc-blink-element.html' async />
+
+    <script src='main.js' type='module' defer></script>
+    <script src='pwa.js' type='text/javascript' defer></script>
   </body>
 </html>

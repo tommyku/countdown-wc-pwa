@@ -34,4 +34,4 @@ class LocalStorage extends HTMLElement {
   }
 }
 
-export default LocalStorage;
+customElements.define('local-storage', LocalStorage);
