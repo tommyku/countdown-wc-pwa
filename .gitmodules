@@ -1,3 +1,6 @@
 [submodule "src/modules/wc-blink"]
 	path = src/modules/wc-blink
 	url = https://github.com/tommyku/wc-blink
+[submodule "src/modules/snabbdom"]
+	path = src/modules/snabbdom
+	url = https://github.com/snabbdom/snabbdom
