@@ -1,5 +1,10 @@
 import Timer from '/data/timer.js'
 
+const patch = snabbdom.init([
+  snabbdom_attributes.default,
+]);
+const h = snabbdom.h;
+
 class CountdownTimer extends HTMLElement {
   static get observedAttributes() { return ['end-at', 'name']; }
 
@@ -35,68 +40,21 @@ class CountdownTimer extends HTMLElement {
       uuid: this.getAttribute('uuid'),
     });
 
-    this.dom = {
-      h3name: document.createElement('span'),
-      timeCountdown: document.createElement('span'),
-      timeEndAt: document.createElement('span'),
-      smallUuid: document.createElement('span'),
-    };
+    this.dom = [
+      document.createElement('span'),
+      document.createElement('span'),
+      document.createElement('span'),
+      document.createElement('span'),
+    ];
 
-    this.dom.h3name.setAttribute('slot', 'name');
-    this.dom.h3name.textContent = this.timer.name;
+    this.dom.forEach((child) => this.appendChild(child));
 
-    this.dom.smallUuid.setAttribute('slot', 'uuid');
-    this.dom.smallUuid.textContent = this.timer.uuid;
+    this.render();
 
-    this.dom.timeCountdown.setAttribute('slot', 'countdown');
-    this.dom.timeCountdown.textContent = this.timer.distance(true, true, true, true).text;
-
-    this.dom.timeEndAt.setAttribute('slot', 'endAt');
-    this.dom.timeEndAt.textContent = new Date(this.timer.endAt).toLocaleString();
-
-    Object.values(this.dom).forEach((child) => {
-      this.appendChild(child);
-    });
-
-    this.updateEndAtDisplayInterval = setInterval(() => this.updateEndAtDisplay(), 500);
-  }
-
-  updateEndAtDisplay() {
-    const { seconds, text } = this.timer.distance(true, true, true, true);
-    if (seconds > 0) {
-      if (this.dom.timeCountdownBackup) {
-        this.appendChild(this.dom.timeCountdownBackup);
-        this.dom.timeCountdown = this.dom.timeCountdownBackup;
-        this.dom.timeCountdownBackup = null;
-      }
-      this.dom.timeCountdown.textContent = text;
-    } else {
-      if (this.dom.timeCountdown) {
-        this.dom.timeCountdownBackup = this.dom.timeCountdown.cloneNode(true);
-        this.dom.timeCountdown.remove();
-        this.dom.timeCountdown = null;
-      }
-      if (seconds <= 0 && !this.notified && Notification.permission === 'granted') {
-        this.notified = true;
-        const title = `It's time for ${this.timer.name}!`;
-        const body = `The designated time for ${this.timer.name} is ${(new Date(this.timer.endAt)).toLocaleString()}.`
-        if (navigator.serviceWorker.controller) {
-          navigator.serviceWorker.ready.then((registration) => {
-            registration.showNotification(title, {
-              body,
-              icon: '/static/icon-192.png',
-              vibrate: [200, 100, 200]
-            });
-          });
-        } else {
-          try {
-            const notification = new Notification(title, { body });
-          } catch (e) {
-            // no notification support
-          }
-        }
-      }
-    }
+    this.updateEndAtDisplayInterval = setInterval(() => {
+      this.timeUpNotification();
+      this.render();
+    }, 500);
   }
 
   removeTimer() {
@@ -126,21 +84,49 @@ class CountdownTimer extends HTMLElement {
     dialogEditTimer.showModal();
   }
 
-  renderChanges(name) {
-    switch (name) {
-      case 'name':
-        this.dom.h3name.textContent = this.timer.name;
-        break;
-      case 'end-at': // endAt doesn't work, use end-at
-        this.updateEndAtDisplay();
-        this.dom.timeEndAt.textContent = new Date(this.timer.endAt).toLocaleString();
-        break;
-      case 'uuid':
-        this.dom.smallUuid.textContent = this.timer.uuid;
-        break;
-      default:
-      // pass
+  isTimeUp() {
+    return this.timer && this.timer.distance(true, true, true, true).seconds <= 0;
+  }
+
+  slots() {
+    const isTimeUp = this.isTimeUp();
+
+    return [
+      h('span', { attrs: { slot: 'name' } }, this.timer.name),
+      h('span', { attrs: { slot: 'uuid' } }, this.timer.uuid),
+      h('span', { attrs: { slot: (isTimeUp ? 'not-countdown' : 'countdown') } }, (isTimeUp ? '' : this.timer.distance(true, true, true, true).text)),
+      h('span', { attrs: { slot: 'endAt' } }, new Date(this.timer.endAt).toLocaleString())
+    ];
+  }
+
+  timeUpNotification() {
+    if (this.isTimeUp()) {
+      if (!this.notified && Notification.permission === 'granted') {
+        this.notified = true;
+        const title = `It's time for ${this.timer.name}!`;
+        const body = `The designated time for ${this.timer.name} is ${(new Date(this.timer.endAt)).toLocaleString()}.`
+        if (navigator.serviceWorker.controller) {
+          navigator.serviceWorker.ready.then((registration) => {
+            registration.showNotification(title, {
+              body,
+              icon: '/static/icon-192.png',
+              vibrate: [200, 100, 200]
+            });
+          });
+        } else {
+          try {
+            const notification = new Notification(title, { body });
+          } catch (e) {
+            // no notification support
+          }
+        }
+      }
     }
+  }
+
+  render() {
+    const slots = this.slots();
+    this.dom.map((child, index) => patch(child, slots[index]));
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -169,7 +155,7 @@ class CountdownTimer extends HTMLElement {
 
     // change DOM only after it's connected
     if (this.connected) {
-      this.renderChanges(name);
+      this.render();
     }
   }
 }

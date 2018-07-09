@@ -1,5 +1,10 @@
 import Timer from '../data/timer.js';
 
+const patch = snabbdom.init([
+  snabbdom_attributes.default,
+]);
+const h = snabbdom.h;
+
 class CountdownTimerList extends HTMLElement {
   constructor() {
     super();
@@ -20,6 +25,8 @@ class CountdownTimerList extends HTMLElement {
 
     this.appendChild(contentDiv);
 
+    this.render();
+
     this.localStorage = document.querySelector(`local-storage[store="${this.storeName}"]`);
 
     this.addEventListener('add', (e) => this.addTimer(e.detail));
@@ -37,8 +44,6 @@ class CountdownTimerList extends HTMLElement {
   }
 
   connectedCallback() {
-    this.renderTimers();
-
     this.localStorage.dispatchEvent(
       new CustomEvent('subscribe', {
         detail: {
@@ -78,52 +83,26 @@ class CountdownTimerList extends HTMLElement {
     this.updateStorage();
   }
 
-  renderTimers() {
+  render() {
+    let children;
     if (Object.keys(this.timers).length > 0) {
-      // something like React's virtual DOM may be grest here coz I don't wanna replace innerHTML all the time
-      // first remove textNodes for empty list message
-      [].slice.call(this.contentDiv.childNodes)
-        .filter(child => child.nodeName === '#text')
-        .forEach(textNode => textNode.remove());
-
-      // 1. get the childNodes, remove if in timers
-      // 2. leftovers gets removed
-      // 3. now get timers, and remove if in childNodes
-      // 4. leftovers gets added
-      const timersUuids = Object.values(this.timers).map(timer => timer.uuid);
-      const childNodeUuids = [].slice.call(this.contentDiv.children)
-        .filter(child => child.tagName === 'COUNTDOWN-TIMER')
-        .map(child => child.getAttribute('uuid'));
-
-      const toRemove = childNodeUuids.filter((uuid) => timersUuids.indexOf(uuid) == -1); // not in timers
-      const toAdd = timersUuids.filter((uuid) => childNodeUuids.indexOf(uuid) == -1); // not in children
-
-      toRemove.forEach((uuid) => this.contentDiv.querySelector(`countdown-timer[uuid="${uuid}"]`).remove());
-      toAdd.forEach((uuid) => this.contentDiv.appendChild(
-          this.generateCountdownTimer(this.timers[uuid])
+      children = Object.values(this.timers).map((timer) => h(
+        'countdown-timer', { attrs: { name: timer.name, 'end-at': timer.endAt, uuid: timer.uuid } }
       ));
-
-      // update attributes
-      [].slice.call(this.contentDiv.children)
-        .filter(child => child.tagName === 'COUNTDOWN-TIMER')
-        .forEach(countdownTimer => {
-          const timer = this.timers[countdownTimer.getAttribute('uuid')];
-          if (timer) {
-            const { name, endAt } = timer.serialize();
-            countdownTimer.setAttribute('name', name);
-            countdownTimer.setAttribute('end-at', endAt);
-          }
-        });
     } else {
-      this.contentDiv.textContent = 'No timer! Add one!';
+      children = 'No Timer! Add one!';
     }
+
+    const newVnode = h('div', { attrs: { slot: 'content' } }, children);
+
+    this.contentDiv = patch(this.contentDiv, newVnode);
   }
 
   storeUpdateCallback(data) {
     if (Array.isArray(data)) {
       this.timers = {};
       data.forEach((timer) => this.timers[timer.uuid] = new Timer(timer));
-      this.renderTimers();
+      this.render();
     }
   }
 }
