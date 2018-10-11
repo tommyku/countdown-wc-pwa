@@ -86,7 +86,7 @@ class CountdownTimerList extends HTMLElement {
   render() {
     let newVnode;
     if (Object.keys(this.timers).length > 0) {
-      children = Object.values(this.timers).map((timer) => h(
+      const children = Object.values(this.timers).map((timer) => h(
         'countdown-timer', { attrs: { name: timer.name, 'end-at': timer.endAt, uuid: timer.uuid } }
       ));
       newVnode = h('div', { attrs: { slot: 'content' } }, children);
