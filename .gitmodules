@@ -4,3 +4,6 @@
 [submodule "src/modules/snabbdom"]
 	path = src/modules/snabbdom
 	url = https://github.com/snabbdom/snabbdom
+[submodule "src/modules/dialog-polyfill"]
+	path = src/modules/dialog-polyfill
+	url = https://github.com/GoogleChrome/dialog-polyfill
